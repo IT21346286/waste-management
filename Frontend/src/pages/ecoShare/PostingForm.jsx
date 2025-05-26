@@ -37,7 +37,7 @@ const PostingForm = () => {
     formData.append("image", image);
   
     try {
-      const response = await axios.post("http://localhost:3002/api/donations/add-donation", formData, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/donations/add-donation`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`

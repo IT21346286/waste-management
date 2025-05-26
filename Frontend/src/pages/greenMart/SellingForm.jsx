@@ -37,7 +37,7 @@ const SellingForm = () => {
     formData.append("image", image);
   
     try {
-      const response = await axios.post("http://localhost:3002/api/items/add-item", formData, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/items/add-item`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`

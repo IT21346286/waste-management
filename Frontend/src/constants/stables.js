@@ -1,4 +1,4 @@
-const UPLOAD_FOLDER_BASE_URL = "http://localhost:3001/uploads/";
+const UPLOAD_FOLDER_BASE_URL = `${process.env.REACT_APP_UPLOAD_URL}/`;
 
 const stables = { UPLOAD_FOLDER_BASE_URL };
 

@@ -99,7 +99,7 @@ const QuizPage = () => {
     const imageData = canvas.toDataURL("image/jpeg");
   
     try {
-      const response = await axios.post('http://localhost:8000/predict-emotion', {
+      const response = await axios.post(`${process.env.REACT_APP_EMOTION_API_URL}/predict-emotion`, {
         image: imageData
       });
   

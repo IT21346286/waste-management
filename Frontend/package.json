@@ -2,7 +2,7 @@
   "name": "frontend-research-app",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3001",
+  "proxy": "${REACT_APP_API_URL}",
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
     "@tanstack/react-query": "^4.28.0",
