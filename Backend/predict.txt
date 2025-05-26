@@ -1,0 +1,36 @@
+{/*
+from fastapi import APIRouter
+from pydantic import BaseModel
+import base64
+import numpy as np
+from io import BytesIO
+from PIL import Image
+from tensorflow.keras.models import load_model
+
+import cv2  # Optional if you're not using it
+
+router = APIRouter()  # Use APIRouter instead of FastAPI
+
+#model = load_model("model/resnet50_tt_fermod_68.h5")
+#model = load_model("model/resnet50_ferplusmod_68.h5")
+model = load_model("model/resnet50_fermixed2_68.h5")   
+#model = load_model("model/resnet50_new_fermod_68.h5")
+
+emotion_labels = ['anger', 'contempt', 'disgust', 'fear', 'happiness', 'neutral', 'sadness', 'surprise']
+
+class ImageData(BaseModel):
+    image: str  # base64 encoded
+
+@router.post("/predict-emotion")
+def predict_emotion(data: ImageData):
+    image_data = base64.b64decode(data.image.split(',')[1])
+    image = Image.open(BytesIO(image_data)).convert('L').resize((48, 48))
+    image_np = np.array(image) / 255.0
+    image_np = np.expand_dims(image_np, axis=0)
+    image_np = np.expand_dims(image_np, axis=-1)
+
+    predictions = model.predict(image_np)
+    predicted_emotion = emotion_labels[np.argmax(predictions)]
+    return {"emotion": predicted_emotion}
+
+*/}

@@ -1,0 +1,893 @@
+/* quiz.css */
+.quiz-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.quiz-container h1 {
+    color: #2c3e50;
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+}
+
+.quiz-status {
+    display: flex;
+    justify-content: space-between;
+    background: #ffffff;
+    padding: 1rem 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.quiz-status span {
+    font-size: 1.1rem;
+    color: #34495e;
+    font-weight: 600;
+    background: #f1f4f7;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+.question-block {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.question-block h2 {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+.options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.options button {
+    padding: 1.2rem;
+    border: none;
+    border-radius: 12px;
+    background: #f8f9fa;
+    color: #34495e;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    /* Add pointer-events to ensure clickability */
+    pointer-events: auto;
+}
+
+.options button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.options button:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.options button.selected {
+    background: #4a90e2;
+    color: white;
+    box-shadow: 0 4px 6px rgba(74,144,226,0.2);
+}
+
+.options button.selected::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 12px;
+    animation: pulse 1.5s infinite;
+    /* Ensure overlay doesn't block clicks */
+    pointer-events: none;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.1); opacity: 0; }
+}
+
+.feedback {
+    padding: 2rem;
+    border-radius: 15px;
+    margin-top: 2rem;
+    text-align: center;
+    animation: slideUp 0.4s ease-out;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.feedback.correct {
+    background: #d4edda;
+    color: #155724;
+    border: 2px solid #c3e6cb;
+}
+
+.feedback.incorrect {
+    background: #f8d7da;
+    color: #721c24;
+    border: 2px solid #f5c6cb;
+}
+
+.next-button {
+    margin-top: 1.5rem;
+    padding: 0.8rem 2.5rem;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.next-button:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74,144,226,0.3);
+}
+
+/* Timer styling */
+.quiz-status span:last-child {
+    font-family: 'Courier New', Courier, monospace;
+    color: #e74c3c;
+    background: #fde8e6;
+}
+
+/* Loading animation */
+@keyframes loadingPulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* Add loading container styles */
+.loading-container {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.loading-message {
+    color: #4a90e2;
+    font-size: 1.2rem;
+    font-weight: 600;
+    animation: loadingPulse 1.5s infinite;
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: rgba(74, 144, 226, 0.1);
+    border-radius: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .quiz-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .options {
+        grid-template-columns: 1fr;
+    }
+    
+    .quiz-status {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .quiz-status span {
+        text-align: center;
+    }
+}
+
+/* Add these styles */
+.question-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.subject-tag {
+    background: #4a90e2;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.level-info {
+    background: #e9ecef;
+    color: #2c3e50;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Start screen styles */
+.start-screen {
+    text-align: center;
+    padding: 2rem;
+}
+
+.start-button {
+    padding: 1.5rem 4rem;
+    font-size: 1.5rem;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin-top: 2rem;
+}
+
+.start-button:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(74,144,226,0.3);
+}
+
+/* Update quiz-container text-align */
+.quiz-container {
+    text-align: center; /* Already in your CSS, keep this */
+}
+
+/* Update question text styling */
+.question-text {
+    color: #2c3e50;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+/* Results Screen Styles */
+.results-screen {
+    text-align: center;
+    padding: 2rem;
+}
+
+.results-screen h2 {
+    color: #2c3e50;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.final-score {
+    font-size: 1.8rem;
+    color: #4a90e2;
+    margin: 2rem 0;
+    font-weight: 700;
+}
+
+.retake-button {
+    padding: 1rem 2.5rem;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.retake-button:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74,144,226,0.3);
+}
+
+/* Update existing quiz container */
+.quiz-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+}
+
+/* Exit button styles */
+.exit-button {
+    padding: 0.5rem 1.5rem;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.exit-button:hover {
+    background: #c0392b;
+    transform: translateY(-1px);
+}
+
+/* Confirmation modal styles */
+.confirmation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.confirmation-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.confirmation-content h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.confirmation-content p {
+    color: #7f8c8d;
+    margin-bottom: 1.5rem;
+}
+
+.confirmation-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.confirm-button {
+    padding: 0.8rem 2rem;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.cancel-button {
+    padding: 0.8rem 2rem;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.confirm-button:hover {
+    background: #c0392b;
+}
+
+.cancel-button:hover {
+    background: #357abd;
+}
+
+.option-btn {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.option-btn.selected {
+    transform: scale(1.02);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.level-info {
+    background: #e9ecef;
+    color: #2c3e50;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.confirmation-modal {
+    backdrop-filter: blur(3px);
+}
+
+.retake-message {
+    color: #e74c3c;
+    font-size: 1.1rem;
+    margin: 1rem 0;
+}
+
+.next-button {
+    margin-top: 1.5rem;
+    padding: 0.8rem 2.5rem;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.next-button:hover {
+    background: #357abd;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74,144,226,0.3);
+}
+
+.retake-button {
+    background: #4a90e2;
+    color: white;
+    margin-top: 1rem;
+}
+
+.option-btn.selected {
+    background: #4a90e2;
+    color: white;
+    box-shadow: 0 4px 6px rgba(74,144,226,0.2);
+}
+
+/* Add these styles to your existing CSS */
+
+/* Feedback styling */
+.feedback {
+    padding: 2rem;
+    border-radius: 15px;
+    margin-top: 2rem;
+    text-align: center;
+    animation: slideUp 0.4s ease-out;
+    font-size: 1.2rem;
+    font-weight: 600;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+}
+
+.feedback.correct {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.feedback.incorrect {
+    background: #ffffff;
+    color: #721c24;
+    border-color: #ffffff;
+}
+
+/* Correct answer styling */
+.correct-answer {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #7cc8ee;
+    border-radius: 8px;
+    color: #180c63;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* AI Tutor button styling */
+.ai-tutor-button {
+    margin-top: 1rem;
+    padding: 0.4rem 2rem;
+    background: linear-gradient(135deg, #5478ae, #c33bf0);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    width: 300px; 
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ai-tutor-button:hover {
+    background: linear-gradient(135deg, #5478ae, #3a6fd0);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Feedback buttons container */
+.feedback-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+/* AI Explanation styling */
+.ai-explanation {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    padding: 1.5rem;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    font-family: cursive;
+    color: #2c3e50;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+.ai-explanation h4 {
+    color: #4a90e2;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+/* Loading animation for explanation */
+.explanation-loading {
+    margin-top: 1rem;
+    color: #4a90e2;
+    font-size: 1.1rem;
+    font-weight: 600;
+    animation: loadingPulse 1.5s infinite;
+}
+
+@keyframes loadingPulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* leaderboard-modal */
+.leaderboard-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .leaderboard-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .leaderboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f5f5f5;
+  }
+  
+
+
+
+  /* Quiz Report */
+  .performance-report {
+  background: #fff;
+  padding: 20px;
+  margin-top: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #ccc;
+}
+
+.report-entry {
+  margin-bottom: 20px;
+}
+
+.report-heading h2 { 
+    font-weight: bold;
+}
+
+
+.print-button, .performance-report-button {
+  margin-top: 1.5rem;
+  margin-left: 1.5rem;
+  padding: 0.8rem 2.5rem;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+/* ========== Quiz Analysis Styling ========== */
+
+/* Modal Overlay */
+.analysis-modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+/* Modal Content */
+.analysis-content {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 1000px;
+  width: 95%;
+  max-height: 90%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal Header */
+.analysis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.analysis-header h3 {
+  font-size: 1.6em;
+  font-family: 'Playfair Display', serif;
+  margin: 0;
+  color: #1f2937;
+}
+
+.close-button {
+  font-size: 1.8em;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-button:hover {
+  color: #111;
+  transform: rotate(90deg);
+}
+
+/* Modal Scrollable Text Area */
+.analysis-text {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 15px;
+  font-size: 1em;
+  font-family: 'Playfair Display', serif;
+  line-height: 1.6;
+  color: #333;
+  max-height: calc(100% - 150px);
+  text-align: left;
+}
+
+/* Numbered Section Titles (1. 2. 3. 4. 5.) */
+.analysis-text .section-title {
+  background-color: #112965; /* Blue-800 */
+  color: white;
+  font-family: 'Playfair Display', serif;
+  font-weight: bold;
+  padding: 6px 20px;
+  border-radius: 8px;
+  margin: 20px 0 10px;
+  font-size: 1.1rem;
+  margin-top: 40px; /* Increased spacing above the title */
+  margin-bottom: 20px; /* Maintain spacing below */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Table Styling */
+.analysis-text table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.analysis-text th,
+.analysis-text td {
+  border: 1px solid #d1d5db;
+  padding: 10px 15px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.analysis-text th {
+  background-color: #3b82f6; /* Blue-500 */
+  color: white;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.analysis-text tr:nth-child(even) {
+  background-color: #f0f9ff;
+}
+
+/* Scrollbar (Optional aesthetic) */
+.analysis-text::-webkit-scrollbar {
+  width: 8px;
+}
+.analysis-text::-webkit-scrollbar-thumb {
+  background-color: #9ca3af;
+  border-radius: 10px;
+}
+
+/* Download Button */
+.analysis-actions {
+  text-align: right;
+  padding-top: 20px;
+  margin-top: 25px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.analysis-actions .download-button {
+  background: linear-gradient(to right, #4caf50, #2e8b57);
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-size: 1.1em;
+  font-family: 'Playfair Display', serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.analysis-actions .download-button:hover {
+  background: linear-gradient(to right, #2e8b57, #4caf50);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.analysis-actions .download-button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Extra spacing before "Subject:" blocks */
+.analysis-text .subject-block {
+  margin-top: 2em;
+}
+
+/* ====== Show Emotion Warning ============= */
+.emotion-warning-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.emotion-warning-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 500px;
+  text-align: center;
+}
+
+.emotion-warning-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.warning-confirm-button {
+  background-color: #dc3545;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.warning-cancel-button {
+  background-color: #6c757d;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

@@ -1,0 +1,205 @@
+/*
+import { QuizResult } from '../models/quizModel';
+import fetch from 'node-fetch';
+import User from '../models/User';
+
+export const getStageRequirements = async (req, res) => {
+  try {
+    const calculateRequirements = (stageNumber) => {
+      const BASE_TIME = 60;
+      const BASE_SCORE = 3;
+
+      return {
+        time: BASE_TIME * stageNumber,
+        requiredScore: BASE_SCORE * stageNumber, // Linear growth
+      };
+    };
+
+    const stage = parseInt(req.query.stage) || 1;
+    const showNext = parseInt(req.query.next) || 1;
+
+    const stages = {};
+    for (let s = stage; s < stage + showNext; s++) {
+      stages[s] = calculateRequirements(s);
+    }
+
+    res.json(stages);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const saveQuizResult = async (req, res) => {
+  try {
+    const stage = Number(req.body.stage);
+    const score = Number(req.body.score);
+
+    if (isNaN(stage)) return res.status(400).json({ message: 'Invalid stage format' });
+    if (isNaN(score)) return res.status(400).json({ message: 'Invalid score format' });
+
+    const calculateRequirements = (stageNumber) => {
+      const BASE_SCORE = 3;
+      return { requiredScore: BASE_SCORE * stageNumber };
+    };
+
+    const requiredScore = calculateRequirements(stage).requiredScore;
+    const passed = score >= requiredScore;
+
+    const result = await QuizResult.findOneAndUpdate(
+      { user: req.user._id },
+      {
+        $push: {
+          stages: {
+            stage,
+            score,
+            passed,
+            timestamp: new Date(),
+          },
+        },
+        userName: req.user.name,
+      },
+      { new: true, upsert: true }
+    );
+
+    await User.findByIdAndUpdate(req.user._id, {
+      $push: {
+        quizHistory: {
+          score,
+          stage,
+          timestamp: new Date(),
+          passed,
+        },
+      },
+    });
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Save error:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getHighestStage = async (req, res) => {
+  try {
+    const result = await QuizResult.findOne({ user: req.user._id });
+    if (result && result.stages.length > 0) {
+      const passedStages = result.stages.filter((stage) => stage.passed);
+      if (passedStages.length > 0) {
+        passedStages.sort((a, b) => b.stage - a.stage);
+        res.json({ highestStage: passedStages[0].stage });
+      } else {
+        res.json({ highestStage: 0 });
+      }
+    } else {
+      res.json({ highestStage: 0 });
+    }
+  } catch (error) {
+    console.error('Error in getHighestStage:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getLeaderboard = async (req, res) => {
+  try {
+    const leaderboard = await QuizResult.aggregate([
+      { $unwind: '$stages' },
+      {
+        $sort: {
+          user: 1,
+          'stages.stage': -1,
+          'stages.timestamp': -1,
+        },
+      },
+      {
+        $group: {
+          _id: '$user',
+          userName: { $first: '$userName' },
+          stage: { $max: '$stages.stage' },
+          score: { $first: '$stages.score' },
+        },
+      },
+      {
+        $sort: {
+          stage: -1,
+          score: -1,
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          userName: 1,
+          stage: 1,
+          score: 1,
+        },
+      },
+    ]);
+    res.json(leaderboard);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getExplanation = async (req, res) => {
+  console.log('Request Body:', req.body);
+  try {
+    const { question, options, correctAnswer } = req.body;
+
+    const prompt = `Calculate and explain step-by-step: ${question}\nOptions: ${options.join(
+      ', '
+    )}\nCorrect answer: ${options[correctAnswer.charCodeAt(0) - 65]}\nFirst show the mathematical calculation, then provide detailed explanations.`;
+
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    // 1. List Available models.
+    const listModelsUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+    const listModelsResponse = await fetch(listModelsUrl);
+
+    if (!listModelsResponse.ok) {
+      const errorData = await listModelsResponse.json();
+      console.error('Gemini ListModels API Error:', errorData);
+      return res.status(500).json({
+        explanation: `Gemini ListModels API Error: ${errorData.error && errorData.error.message || listModelsResponse.statusText}`,
+      });
+    }
+
+    const listModelsData = await listModelsResponse.json();
+    console.log("Available Gemini Models:", listModelsData);
+
+    // 2. Try using a model that is available.
+    const modelName = 'models/gemini-1.5-pro-latest'; // Use the correct model from the list.
+    const url = `https://generativelanguage.googleapis.com/v1beta/${modelName}:generateContent?key=${apiKey}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Gemini API Error:', errorData);
+      return res.status(500).json({
+        explanation: `Gemini API Error: ${errorData.error && errorData.error.message || response.statusText}`,
+      });
+    }
+
+    const data = await response.json();
+    let explanation = 'Explanation not available';
+
+    if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0].text) {
+      explanation = data.candidates[0].content.parts[0].text.trim();
+    }
+
+    res.json({ explanation });
+  } catch (error) {
+    console.error('API Error:', error);
+    res.status(500).json({
+      explanation: 'An error occurred while generating the explanation. Please try again later.',
+    });
+  }
+};
+*/

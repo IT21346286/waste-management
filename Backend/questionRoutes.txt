@@ -1,0 +1,53 @@
+/*
+
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs'; // Added fs import
+const router = express.Router();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load Q-learning model and questions
+const modelPath = path.join(__dirname, '../models/q_learning_model.json');
+const questionsPath = path.join(__dirname, '../models/questions.json');
+
+const qLearningModel = JSON.parse(fs.readFileSync(modelPath));
+const questions = JSON.parse(fs.readFileSync(questionsPath));
+
+// Get questions by level
+router.get('/:level', (req, res) => {
+    const level = parseInt(req.params.level);
+    const levelQuestions = questions.filter(q => q.level === level);
+    res.json(levelQuestions);
+});
+
+// Get next level recommendation
+router.post('/next-level', (req, res) => {
+    const { currentLevel, isCorrect } = req.body;
+    const stateKey = `${currentLevel},${isCorrect ? 1 : 0}`;
+    
+    // Get Q-values from model
+    const qValues = qLearningModel.q_table[stateKey] || 
+        (isCorrect ? [-0.5, 0.0, 0.5] : [0.5, 0.0, -0.5]);
+
+    // Epsilon-greedy action selection
+    let action;
+    if (Math.random() < qLearningModel.epsilon) {
+        action = Math.floor(Math.random() * 3);
+    } else {
+        action = qValues.indexOf(Math.max(...qValues));
+    }
+
+    // Calculate next level
+    let nextLevel = currentLevel;
+    if (action === 0) nextLevel = Math.max(currentLevel - 1, 1);
+    if (action === 2) nextLevel = Math.min(currentLevel + 1, 4);
+
+    res.json({ nextLevel });
+});
+
+export default router;
+
+*/

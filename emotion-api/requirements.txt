@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+tensorflow
+numpy
+pillow
+python-multipart  # For image uploads
+opencv-python-headless  # Optional, if using cv2
